@@ -16,6 +16,7 @@ import PopularPage from '../pages/PopularPage'
 import FavoritePage from '../pages/FavoritePage'
 import TrendingPage from '../pages/TrendingPage'
 import MyPage from '../pages/MyPage'
+import {connect} from "react-redux";
 
 
 type Props = {};
@@ -78,7 +79,7 @@ const NAVIGATOR = {
     },
 };
 
-export default class DynamicTabNavigation extends Component<Props> {
+class DynamicTabNavigation extends Component<Props> {
     /**
      * 通过tabNavigator定制需要显示的组件  从NAVIGATOR中选取
      * @returns {NavigationContainer}
@@ -89,7 +90,14 @@ export default class DynamicTabNavigation extends Component<Props> {
         const tabNavigator = {PopularPage,TrendingPage,FavoritePage};
         /** 返回一个底部导航 */
         return createBottomTabNavigator(tabNavigator,{
-            tabBarComponent: TabBarComponent //对底部导航进行控制   基于react-native-tabs组件  TabBarComponent:用于控制react-navigation-tabs的组件
+            // tabBarComponent: TabBarComponent //对底部导航进行控制   基于react-native-tabs组件  TabBarComponent:用于控制react-navigation-tabs的组件
+            tabBarComponent:props=>{
+                return <TabBarComponent
+                    {...this.props}
+                    theme={this.props.theme}
+
+                />
+            }
         });
     }
     render() {
@@ -101,28 +109,21 @@ class TabBarComponent extends Component{
     constructor(props){
         super(props);
         //定义一个属性,保存BottomTabBar的属性
-        this.them = {
-            tintColor:props.activeTintColor,
+        this.theme = {
+            tintColor:this.props.theme,
             updateTime:new Date().getTime()
         }
     }
-
     render() {
-        let {routes,index} = this.props.navigation.state;
-        /**去除对应params的参数,此参数的结构与this.them对应*/
-        if (routes[index].params){
-            let {them} = routes[index].params;
-            if (them && them.updateTime > this.them.updateTime) {/**通过时间戳判断此时传入的值是否是新传入的,如若不是,不予理会*/
-                /**将其他地方通过navigation.setParams传入的值 赋值给this.them                 */
-                this.them = them;
-            }
-        }
         return <BottomTabBar
             {...this.props}
-            activeTintColor={this.them.tintColor || this.props.activeTintColor} //activeTintColor赋值
+            activeTintColor={this.props.theme} //activeTintColor赋值
         />;
     }
 }
-const styles = StyleSheet.create({
-
-});
+const mapStateToProps=state=>{
+    return({
+        theme:state.theme.theme
+    })
+}
+export default connect(mapStateToProps)(DynamicTabNavigation)

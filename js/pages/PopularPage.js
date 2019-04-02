@@ -10,8 +10,9 @@ import {Platform, StyleSheet, Text, View} from 'react-native';
 import navigatorUtil from '../Util/navigatorUtil'
 import {createMaterialTopTabNavigator,createAppContainer} from "react-navigation";
 
+
 type Props = {};
-export default class PopularPage extends Component<Props> {
+class PopularPage extends Component<Props> {
     /**
      * @desc 创建按头部导航，配置并将createMaterialTopTabNavigator返回
      *       以供createAppContainer使用
@@ -52,3 +53,4 @@ class PopularMain extends Component{
 const styles = StyleSheet.create({
 
 });
+export default PopularPage;

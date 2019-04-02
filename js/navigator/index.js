@@ -35,8 +35,7 @@ const MainNavigator=createStackNavigator({
     DetailPage:{
         screen:DetailPage,
         navigationOptions:{
-            headerTitle:'back',
-            headerBackground:"green"
+            headerTitle:'back'
         }
     }
 });

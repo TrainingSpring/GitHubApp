@@ -45,7 +45,7 @@ export default class PopularPage extends Component<Props> {
 class PopularMain extends Component{
     render(){
         return <View><Text onPress={()=>{
-            navigatorUtil.goPage('DetailPage');
+            navigatorUtil.goPage({navigation:this.props.navigation},'DetailPage');
         }}>详情页</Text></View>
     }
 }

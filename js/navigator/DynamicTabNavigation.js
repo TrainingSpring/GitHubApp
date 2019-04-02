@@ -92,9 +92,10 @@ class DynamicTabNavigation extends Component<Props> {
         return createBottomTabNavigator(tabNavigator,{
             // tabBarComponent: TabBarComponent //对底部导航进行控制   基于react-native-tabs组件  TabBarComponent:用于控制react-navigation-tabs的组件
             tabBarComponent:props=>{
+                console.log(props, this.props,"tabbarBottom")
                 return <TabBarComponent
-                    {...this.props}
                     theme={this.props.theme}
+                    {...props}
 
                 />
             }
@@ -115,6 +116,7 @@ class TabBarComponent extends Component{
         }
     }
     render() {
+        console.log(this,'tabBar-this');
         return <BottomTabBar
             {...this.props}
             activeTintColor={this.props.theme} //activeTintColor赋值

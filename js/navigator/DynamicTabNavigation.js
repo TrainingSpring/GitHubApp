@@ -19,7 +19,11 @@ import MyPage from '../pages/MyPage'
 
 
 type Props = {};
-const NAVGATOR = {
+/**
+ * 定义底部导航的路由以及参数
+ * @type {{PopularPage: {screen: PopularPage, navigationOptions: {tabBarLabel: string, tabBarIcon: (function({tintColor?: *, focused: *}): *)}}, FavoritePage: {screen: FavoritePage, navigationOptions: {tabBarLabel: string, tabBarIcon: (function({tintColor?: *, focused: *}): *)}}, TrendingPage: {screen: TrendingPage, navigationOptions: {tabBarLabel: string, tabBarIcon: (function({tintColor?: *, focused: *}): *)}}, MyPage: {screen: MyPage, navigationOptions: {tabBarLabel: string, tabBarIcon: (function({tintColor?: *, focused: *}): *)}}}}
+ */
+const NAVIGATOR = {
     PopularPage:{
         screen:PopularPage,
         navigationOptions:{
@@ -76,17 +80,16 @@ const NAVGATOR = {
 
 export default class DynamicTabNavigation extends Component<Props> {
     /**
-     * @desc  使用navigation中的createBottomTabNavigator
-     *        创建一个底部导航navBar,并将其返回出来
-     *        以便于createAppContainer的使用
+     * 通过tabNavigator定制需要显示的组件  从NAVIGATOR中选取
      * @returns {NavigationContainer}
      * @private
      */
     _createNavBar(){
-        const {PopularPage,TrendingPage,FavoritePage,MyPage} = NAVGATOR;
+        const {PopularPage,TrendingPage,FavoritePage,MyPage} = NAVIGATOR;
         const tabNavigator = {PopularPage,TrendingPage,FavoritePage};
+        /** 返回一个底部导航 */
         return createBottomTabNavigator(tabNavigator,{
-            tabBarComponent: TabBarComponent
+            tabBarComponent: TabBarComponent //对底部导航进行控制   基于react-native-tabs组件  TabBarComponent:用于控制react-navigation-tabs的组件
         });
     }
     render() {
@@ -97,7 +100,7 @@ export default class DynamicTabNavigation extends Component<Props> {
 class TabBarComponent extends Component{
     constructor(props){
         super(props);
-        console.log(props);
+        //定义一个属性,保存BottomTabBar的属性
         this.them = {
             tintColor:props.activeTintColor,
             updateTime:new Date().getTime()
@@ -106,15 +109,17 @@ class TabBarComponent extends Component{
 
     render() {
         let {routes,index} = this.props.navigation.state;
+        /**去除对应params的参数,此参数的结构与this.them对应*/
         if (routes[index].params){
             let {them} = routes[index].params;
-            if (them && them.updateTime > this.them.updateTime) {
+            if (them && them.updateTime > this.them.updateTime) {/**通过时间戳判断此时传入的值是否是新传入的,如若不是,不予理会*/
+                /**将其他地方通过navigation.setParams传入的值 赋值给this.them                 */
                 this.them = them;
             }
         }
         return <BottomTabBar
             {...this.props}
-            activeTintColor={this.them.tintColor || this.props.activeTintColor}
+            activeTintColor={this.them.tintColor || this.props.activeTintColor} //activeTintColor赋值
         />;
     }
 }

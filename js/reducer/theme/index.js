@@ -10,10 +10,8 @@ const defaultState = {
 }
 export default function onAction(state=defaultState,action) {
 
-    console.log(action.type,state,defaultState,"reducer1")
     switch(action.type){
         case types.THEME_CHANGE:
-            console.log(action,state,defaultState,"reducer2")
             return {
                 ...state,
                 theme:action.theme

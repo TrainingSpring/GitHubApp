@@ -5,7 +5,6 @@
 */
 import types from '../types'
 export function onThemeChange(theme) {
-    console.log(theme,'action',1);
     return{
         type:types.THEME_CHANGE,
         theme:theme

@@ -93,7 +93,7 @@ class DynamicTabNavigation extends Component<Props> {
             // tabBarComponent: TabBarComponent //对底部导航进行控制   基于react-native-tabs组件  TabBarComponent:用于控制react-navigation-tabs的组件
             tabBarComponent:props=>{
                 return <TabBarComponent
-                    {...this.props}
+                    {...props}
                     theme={this.props.theme}
 
                 />

@@ -6,7 +6,7 @@
  */
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import {Button, StyleSheet, Text, View} from 'react-native';
 import navigatorUtil from '../Util/navigatorUtil'
 import {createMaterialTopTabNavigator,createAppContainer} from "react-navigation";
 
@@ -45,9 +45,20 @@ class PopularPage extends Component<Props> {
 }
 class PopularMain extends Component{
     render(){
-        return <View><Text onPress={()=>{
+        return <View>
+            <Text onPress={()=>{
             navigatorUtil.goPage({navigation:this.props.navigation},'DetailPage');
-        }}>详情页</Text></View>
+        }}>详情页</Text>
+            <Button title={"搜索页"} onPress={()=>{
+            navigatorUtil.goPage({navigation:this.props.navigation},'UseFetchDemo');
+        }} />
+            <Button title={"数据储存页"} onPress={()=>{
+            navigatorUtil.goPage({navigation:this.props.navigation},'UseAsyncStorageDemo');
+        }} />
+            <Button title={"数据缓存"} onPress={()=>{
+            navigatorUtil.goPage({navigation:this.props.navigation},'UseCacheDemo');
+        }} />
+        </View>
     }
 }
 const styles = StyleSheet.create({

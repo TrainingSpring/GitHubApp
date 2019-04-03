@@ -16,6 +16,9 @@ import {
 import HomePage from '../pages/HomePage'
 import WelcomePage from '../pages/WelcomePage'
 import DetailPage from '../pages/DetailPage'
+import UseFetchDemo from '../pages/UseFetchDemo'
+import UseAsyncStorageDemo from '../pages/UseAsyncStorageDemo'
+import UseCacheDemo from '../pages/UseCacheDemo'
 import {connect} from 'react-redux';
 import {createReactNavigationReduxMiddleware, createReduxContainer} from 'react-navigation-redux-helpers';
 
@@ -40,7 +43,26 @@ const MainNavigator = createStackNavigator({
         navigationOptions: {
             headerTitle: 'back'
         }
-    }
+    },
+    UseFetchDemo: {
+        screen: UseFetchDemo,
+        navigationOptions: {
+            headerTitle: 'back'
+        }
+    },
+    UseAsyncStorageDemo: {
+        screen: UseAsyncStorageDemo,
+        navigationOptions: {
+            headerTitle: 'back'
+        }
+    },
+    UseCacheDemo: {
+        screen: UseCacheDemo,
+        navigationOptions: {
+            headerTitle: 'back'
+        }
+    },
+
 });
 export const RootNavigator = createAppContainer(createSwitchNavigator({
     Init: InitNavigator,

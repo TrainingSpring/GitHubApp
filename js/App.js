@@ -14,7 +14,6 @@ import store from './store'
 type Props = {};
 export default class App extends Component<Props> {
   render() {
-      console.log(store,'store')
     return (
         <Provider store={store}>
           <AppNavigator/>

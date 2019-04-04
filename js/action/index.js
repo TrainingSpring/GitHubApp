@@ -4,6 +4,8 @@
 * @Params:none
 */
 import {onThemeChange} from "./theme/index";
+import {onLoadPopularData} from "./popular/index";
 export default {
-    onThemeChange:onThemeChange
+    onThemeChange:onThemeChange,
+    onLoadPopularData
 }

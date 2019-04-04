@@ -17,22 +17,23 @@ export default class UseCacheDemo extends Component<Props> {
             setVal:''
         }
     }
+    /**
+    * @Author: Training
+    * @Desc: 搜索功能
+    * @Params:
+    */
     searchData(){
         let cache = new Cache;
         let url = `https://api.github.com/search/repositories?q=${this.searchKey}`;
         let result = cache._initData(url);
         result.then(response=>{
-            /**
-            * @Author:Training
-            * @Desc:暂时写到这  等待调试
-            * @Params:
-            */
-            let result = JSON.parse(response);
-            let time = new Date(result.timeStamp);
+
+            // let result = JSON.parse(response);
+            let time = new Date(response.timeStamp);
             let ymd = `${time.getFullYear()}-${time.getMonth()}-${time.getDate()}  ${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}`
-            console.log (time,result,ymd,'useCache');
+            console.log (time,response,ymd,'useCache');
             this.setState({
-                setVal:result.data,
+                setVal:response.data,
                 timeStamp:ymd
             })
         }).catch(error=>{

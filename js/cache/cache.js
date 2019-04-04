@@ -88,14 +88,14 @@ export default class Cache {
                 .then((response) => {
                     let result= JSON.parse(response);
                     if ( result && this.timeCheck(result.timeStamp)) {
-                        resolve(response);
+                        resolve(result);
                     } else {
                         this.getNetData(url)
                             .then(res=>{
                                 this.getData(url)
                                     .then(response=>{
-                                        console.log(response,'_initData')
-                                        resolve(response);
+                                        let res = JSON.parse(response);
+                                        resolve(res);
                                     })
                             })
 
@@ -111,11 +111,8 @@ export default class Cache {
 * @Params: timeStamp    时间戳
 */
     timeCheck(timeStamp) {
-        console.log(timeStamp,"timeCheck");
         let thisTime = new Date().getTime();
-        console.log(timeStamp,thisTime, 'timeCheck');
         if ((thisTime - timeStamp) < 14400000) {
-            console.log('this is true')
             return true;
         }
 

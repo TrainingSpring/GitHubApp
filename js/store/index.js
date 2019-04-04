@@ -21,7 +21,6 @@ const logger = store=>next=>action=>{
 
 const middlewares = [
     middleware,
-    logger,
     thunk
 ];
 /** * 创建store */

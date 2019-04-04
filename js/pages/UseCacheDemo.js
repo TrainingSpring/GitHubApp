@@ -28,13 +28,13 @@ export default class UseCacheDemo extends Component<Props> {
             * @Params:
             */
             let result = JSON.parse(response);
-            let time = new Date(result.timestamp);
-            console.log (time);
+            let time = new Date(result.timeStamp);
+            let ymd = `${time.getFullYear()}-${time.getMonth()}-${time.getDate()}  ${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}`
+            console.log (time,result,ymd,'useCache');
             this.setState({
                 setVal:result.data,
-                timestamp:time
+                timeStamp:ymd
             })
-            console.log(JSON.parse(response));
         }).catch(error=>{
             console.log(error,"error")
         })
@@ -51,7 +51,7 @@ export default class UseCacheDemo extends Component<Props> {
           <View style={styles.content}>
               <Text style={styles.text} onPress={()=>{this.searchData()}}>查询</Text>
           </View>
-          <Text>数据储存的时间是:{this.state.timestamp}=================数据内容{this.state.setVal}</Text>
+          <Text>数据储存的时间是:{this.state.timeStamp}=================数据内容{this.state.setVal}</Text>
       </View>
     );
   }

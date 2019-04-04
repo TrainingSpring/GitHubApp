@@ -2,7 +2,7 @@ import {AsyncStorage} from 'react-native'
 
 /**
 * @Author:Training
-* @Desc:
+* @Desc
  * _initData入口进入
  * 由_initData调用getData获取本地数据,并且由timeCheck检测数据有效性,若数据为真,且数据有效,则返回本地缓存数据
  * 否则调用getNetData来获取网络数据,如若获取到网络数据,则调用saveData来储存数据,

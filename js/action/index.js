@@ -4,9 +4,11 @@
 * @Params:none
 */
 import {onThemeChange} from "./theme/index";
-import {onLoadPopularData,onLoadMorePopularData} from "./popular/index";
+import {onLoadPopularData,onLoadMorePopularData,addFavoriteData,getFavoriteData} from "./popular/index";
 export default {
     onThemeChange:onThemeChange,
     onLoadPopularData,
-    onLoadMorePopularData
+    onLoadMorePopularData,
+    addFavoriteData,
+    getFavoriteData
 }

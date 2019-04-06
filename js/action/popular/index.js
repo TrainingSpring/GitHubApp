@@ -6,15 +6,25 @@
  * url:         获取数据的地址
 */
 import types from '../types'
-import Cache from '../../cache/cache'
+import CachePopular from '../../cache/cachePopular'
+import CacheFavorite from '../../cache/cacheFavorite'
 import {ToastAndroid} from 'react-native'
+ /**
+  * @Author:Training
+  * @Desc:加载popular中的数据
+  * @params:
+    * storeName : 数据源名  如java,Android等...
+    * url : 借口地址(缓存的key值)
+    * 是否为下拉刷新
+    * 每一页的数据数量
+  */
 export function onLoadPopularData(storeName,url,refresh,pageSize) {
     return dispatch=>{
         dispatch({
             type:types.POPULAR_REFRESH,
             storeName:storeName
         });
-        let dataStore = new Cache();
+        let dataStore = new CachePopular();
         let dataPromise ;
         if (refresh) {
             dataPromise = dataStore.updateData(url);
@@ -84,3 +94,50 @@ export function onLoadMorePopularData(storeName,allData,items,pageSize,pageIndex
         }
     }
  }
+  /**
+   * @Author:Training
+   * @Desc:添加收藏
+   * @Params:data
+   */
+export function addFavoriteData(data){
+    return dispatch=>{
+        let dataStore = new CacheFavorite();
+        dataStore.addData(data.item).then(response=>{
+            console.log(response,'item add favorite');
+            dispatch({
+                type:types.FAVORITE_SUCCESS,
+                items:response.item
+            })
+        }).catch(error=>{
+            console.log(error,"error add favorite")
+            dispatch({
+                type:types.FAVORITE_FAIL,
+                status:true
+            })
+        })
+    }
+}
+  /**
+   * @Author:Training
+   * @Desc:查找所有收藏
+   * @Params:data
+   */
+export function getFavoriteData(){
+    return dispatch=>{
+        let dataStore = new CacheFavorite();
+        dataStore.getData().then(response=>{
+            console.log(response);
+            dispatch({
+                type:types.FAVORITE_SUCCESS,
+                status:false,
+                items:response
+            })
+        }).catch(error=>{
+            console.log(error)
+            dispatch({
+                type:types.FAVORITE_SUCCESS,
+                status:true
+            })
+        })
+    }
+}

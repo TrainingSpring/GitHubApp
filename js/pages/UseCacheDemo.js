@@ -7,7 +7,7 @@
 
 import React, {Component} from 'react';
 import {TextInput, StyleSheet, Text, View,AsyncStorage } from 'react-native';
-import Cache from '../cache/cache'
+import CachePopular from '../cache/cachePopular'
 
 type Props = {};
 export default class UseCacheDemo extends Component<Props> {
@@ -23,7 +23,7 @@ export default class UseCacheDemo extends Component<Props> {
     * @Params:
     */
     searchData(){
-        let cache = new Cache;
+        let cache = new CachePopular;
         let url = `https://api.github.com/search/repositories?q=${this.searchKey}`;
         let result = cache._initData(url);
         result.then(response=>{

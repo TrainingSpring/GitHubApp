@@ -13,7 +13,7 @@ import {AsyncStorage} from 'react-native'
  * 需要注意的是,在各种情况下的数据返回的类型是相同的,不要这里返回数据data,那里返回数据timeStamp,
  * 而另外的其他地方则返回完整数据,这会导致数据的不一致,从而在使用的时候导致解析失败而发生的错误
 */
-export default class Cache {
+export default class CachePopular {
      /**
       * @Author:Training
       * @Desc:更新数据,从网络更新数据到缓存中

@@ -48,7 +48,7 @@ export default function onAction(state=defaultState,action) {
                     finish:false
                 }
             };
-        case  types.POPULAR_LOAD_MORE_FAIL:
+        case types.POPULAR_LOAD_MORE_FAIL:
             return{
                 ...state,
                 [action.storeName]:{

@@ -103,12 +103,12 @@ class PopularMain extends Component {
             <PopularComponent item={data}/>
         )
     }
-    loadMoreData(error){
+    loadMoreData(finish){
         let render = <View style={{padding:20}}>
             <ActivityIndicator color={this.props.theme.theme} size={24}/>
             <Text style={{textAlign: 'center'}}>加载更多</Text>
         </View>
-         if (error) {
+         if (finish) {
              render = <View style={{padding:20}}>
                  <Text style={{textAlign: 'center'}}>-----我是有底线的-----</Text>
              </View>
@@ -129,7 +129,7 @@ class PopularMain extends Component {
                 data={store.items}
                 keyExtractor={item => "" + item.id}
                 renderItem={(data) => this.handleRender(data)}
-                ListFooterComponent={()=>this.loadMoreData(store.error)}
+                ListFooterComponent={()=>this.loadMoreData(store.finish)}
                 onEndReachedThreshold={0.5}
                 onEndReached={()=>{
                         if(this.isLoadMore){
@@ -151,6 +151,7 @@ class PopularMain extends Component {
                         titleColor={this.props.theme.theme}
                         title={'Loading...'}
                         onRefresh={()=>{
+                            this.pageIndex = 1;
                             const url = this.setUrl(this.storeName);
                             const {onLoadPopularData} = this.props;
                             onLoadPopularData(this.storeName, url,true);

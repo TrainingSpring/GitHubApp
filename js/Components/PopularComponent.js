@@ -9,10 +9,22 @@ import React, {Component} from 'react';
 import {Image, StyleSheet, Text, View,TouchableOpacity} from 'react-native';
 import Entypo from "react-native-vector-icons/Entypo"
 import {connect} from "react-redux";
+import action from "../action";
+import {addFavoriteData} from "../action/popular";
 
 
 type Props = {};
 class PopularComponent extends Component<Props> {
+    constructor(props){
+        super(props);
+        const {getFavoriteData} = this.props;
+        getFavoriteData();
+        this.state={
+            favorite:false
+        };
+        console.log(this.props,'construct')
+
+    }
   render() {
       let {item} = this.props;
       return (
@@ -27,10 +39,11 @@ class PopularComponent extends Component<Props> {
                       <Text style={styles.text1}>Author: <Image style={{width:20,height:20}} source={{uri:item.item.owner.avatar_url}} /> </Text>
                       <Text style={styles.text2}>Stars:{item.item.stargazers_count}</Text>
                       <Text style={styles.text3} onPress={()=>{
-                          console.log(1);
+                          let { addFavoriteData }=this.props;
+                          addFavoriteData(item);
                       }}>
                           <Entypo
-                            name={'star-outlined'}
+                            name={item.favorite?'star':'star-outlined'}
                             size={20}
                             color={this.props.theme.theme}
                           />
@@ -72,7 +85,12 @@ const styles = StyleSheet.create({
 });
 const mapStateToProps = state=>{
     return {
-        theme:state.theme
+        theme:state.theme,
+        favorite:state.favorite
     }
-}
-export default connect(mapStateToProps)(PopularComponent)
+};
+const mapDispatchToProps = dispatch => ({
+    addFavoriteData: (data) => dispatch(action.addFavoriteData(data)),
+    getFavoriteData:()=>dispatch(action.getFavoriteData())
+});
+export default connect(mapStateToProps,mapDispatchToProps)(PopularComponent)

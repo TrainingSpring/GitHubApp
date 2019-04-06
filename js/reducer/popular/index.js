@@ -13,16 +13,18 @@ export default function onAction(state=defaultState,action) {
             return {
                 ...state,
                 [action.storeName]:{
-                    ...[action.storeName],
+                    ...state[action.storeName],
                     items:action.items,
-                    isLoading:false
+                    data:action.data,
+                    isLoading:false,
+                    finish:false
                 }
             };
         case types.POPULAR_FAIL:
             return {
                 ...state,
                 [action.storeName]:{
-                    ...[action.storeName],
+                    ...state[action.storeName],
                     error:true,
                     isLoading:false
                 }
@@ -31,8 +33,30 @@ export default function onAction(state=defaultState,action) {
             return {
                 ...state,
                 [action.storeName]:{
-                    ...[action.storeName],
+                    ...state[action.storeName],
                     isLoading:true
+                }
+            };
+        case types.POPULAR_LOAD_MORE_SUCCESS:
+            return{
+                ...state,
+                [action.storeName]:{
+                    ...state[action.storeName],
+                    items:action.items,
+                    data:action.data,
+                    isLoading:false,
+                    finish:false
+                }
+            };
+        case  types.POPULAR_LOAD_MORE_FAIL:
+            return{
+                ...state,
+                [action.storeName]:{
+                    ...state[action.storeName],
+                    items:action.items,
+                    data:action.data,
+                    isLoading:false,
+                    finish:true
                 }
             };
         default:

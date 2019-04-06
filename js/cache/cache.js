@@ -14,6 +14,51 @@ import {AsyncStorage} from 'react-native'
  * 而另外的其他地方则返回完整数据,这会导致数据的不一致,从而在使用的时候导致解析失败而发生的错误
 */
 export default class Cache {
+     /**
+      * @Author:Training
+      * @Desc:更新数据,从网络更新数据到缓存中
+      * @Params:url
+      */
+     updateData(url){
+        return new Promise((resolve, reject) => {
+             this.getNetData(url)
+                 .then(()=>{
+                     this.getData(url)
+                         .then(response=>{
+                             let res = JSON.parse(response);
+                             resolve(res);
+                         })
+                 })
+        })
+     }
+    /**
+     * @Author:Training
+     * @Desc:检测数据有效性
+     * @Params: url
+     */
+    _initData(url) {
+        return new Promise((resolve, reject) => {
+            this.getData(url)
+                .then((response) => {
+                    let result= JSON.parse(response);
+                    if ( result && this.timeCheck(result.timeStamp)) {
+                        resolve(result);
+                    } else {
+                        this.getNetData(url)
+                            .then(res=>{
+                                this.getData(url)
+                                    .then(response=>{
+                                        let res = JSON.parse(response);
+                                        resolve(res);
+                                    })
+                            })
+
+                    }
+                }).catch(error => {
+                reject(error)
+            })
+        })
+    }
     /**
      * @Author: Training
      * @Desc: saveData
@@ -77,39 +122,12 @@ export default class Cache {
         })
 
     }
+
     /**
     * @Author:Training
-    * @Desc:检测数据有效性
-    * @Params: url
+    * @Desc:有效时间检测
+    * @Params: timeStamp    时间戳
     */
-    _initData(url) {
-        return new Promise((resolve, reject) => {
-            this.getData(url)
-                .then((response) => {
-                    let result= JSON.parse(response);
-                    if ( result && this.timeCheck(result.timeStamp)) {
-                        resolve(result);
-                    } else {
-                        this.getNetData(url)
-                            .then(res=>{
-                                this.getData(url)
-                                    .then(response=>{
-                                        let res = JSON.parse(response);
-                                        resolve(res);
-                                    })
-                            })
-
-                    }
-                }).catch(error => {
-                        reject(error)
-            })
-        })
-    }
-/**
-* @Author:Training
-* @Desc:有效时间检测
-* @Params: timeStamp    时间戳
-*/
     timeCheck(timeStamp) {
         let thisTime = new Date().getTime();
         if ((thisTime - timeStamp) < 14400000) {

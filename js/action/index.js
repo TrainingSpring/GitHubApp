@@ -9,8 +9,12 @@ import {
     onLoadMorePopularData,
     addFavoriteData,
     getFavoriteData,
-    removeFavoriteData
+    removeFavoriteData,
 } from "./popular/index";
+import {
+    onLoadTrendingData,
+    onLoadMoreTrendingData
+} from "./trending/index";
 
 export default {
     onThemeChange: onThemeChange,
@@ -18,5 +22,7 @@ export default {
     onLoadMorePopularData,
     addFavoriteData,
     removeFavoriteData,
-    getFavoriteData
+    getFavoriteData,
+    onLoadTrendingData,
+    onLoadMoreTrendingData
 }

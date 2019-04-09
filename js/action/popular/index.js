@@ -6,9 +6,12 @@
  * url:         获取数据的地址
 */
 import types from '../types'
-import CachePopular from '../../cache/cachePopular'
+import DataStore,{TYPESTORE} from '../../cache/dataStore'
 import CacheFavorite from '../../cache/cacheFavorite'
 import {ToastAndroid} from 'react-native'
+import {handleData} from "../actionDataUtil";
+
+const TypeStore = TYPESTORE.popular;
  /**
   * @Author:Training
   * @Desc:加载popular中的数据
@@ -19,26 +22,26 @@ import {ToastAndroid} from 'react-native'
     * 每一页的数据数量
   */
 export function onLoadPopularData(storeName,url,refresh,pageSize) {
-    return dispatch=>{
+     return dispatch=>{
         dispatch({
             type:types.POPULAR_REFRESH,
             storeName:storeName
         });
-        let dataStore = new CachePopular();
+        let dataStore = new DataStore();
         let dataPromise ;
         if (refresh) {
-            dataPromise = dataStore.updateData(url);
+            dataPromise = dataStore.updateData(url,TypeStore);
         }else{
-            dataPromise = dataStore._initData(url);
+            dataPromise = dataStore._initData(url,TypeStore);
         }
 
         dataPromise
             .then(res=>{
-                const data = JSON.parse(res.data);
-                handleData(dispatch,storeName,data,pageSize);
+                const data = typeof res.data === 'object'?res.data:JSON.parse(res.data);
+                handleData(types.POPULAR_SUCCESS,dispatch,storeName,data,pageSize);
             })
             .catch(error=>{
-                console.log('Error:',error);
+                console.log('Error: 操作数据失败: ',error);
                 dispatch({
                     type:types.POPULAR_FAIL,
                     storeName,
@@ -46,18 +49,7 @@ export function onLoadPopularData(storeName,url,refresh,pageSize) {
                 })
             })
     }
-}
-//操作数据
-function handleData(dispatch,storeName,data,pageSize){
-    const items = data && data.items;
-    let viewData = items.length<pageSize?items:items.slice(0,pageSize) ;
-    dispatch({
-        type:types.POPULAR_SUCCESS,
-        items:viewData,
-        data:items,
-        storeName
-    })
-}
+ }
  /**
   * @Author:Training
   * @Desc:加载更多数据
@@ -99,10 +91,10 @@ export function onLoadMorePopularData(storeName,allData,items,pageSize,pageIndex
    * @Desc:添加收藏
    * @Params:data
    */
-export function addFavoriteData(data,callBack = ()=>{}){
+export function addFavoriteData(key,data,callBack = ()=>{},flag){
     return dispatch=>{
-        let dataStore = new CacheFavorite('popular');
-        dataStore.setData(data.id,data).then(status=>{
+        let dataStore = new CacheFavorite(flag);
+        dataStore.setData(key,data).then(status=>{
             callBack(true);
             dispatch({
                 type:types.FAVORITE_SUCCESS,
@@ -123,9 +115,9 @@ export function addFavoriteData(data,callBack = ()=>{}){
    * @Desc:取消收藏
    * @Params:data
    */
-export function removeFavoriteData(key,callBack = ()=>{}){
+export function removeFavoriteData(key,callBack = ()=>{},flag){
     return dispatch=>{
-        let dataStore = new CacheFavorite('popular');
+        let dataStore = new CacheFavorite(flag);
         dataStore.removeData(key).then(res=>{
             callBack(true);
             dispatch({
@@ -138,19 +130,6 @@ export function removeFavoriteData(key,callBack = ()=>{}){
                 type:types.FAVORITE_FAIL
             })
         })
-        /*dataStore.getData().then(response=>{
-            dispatch({
-                type:types.FAVORITE_SUCCESS,
-                status:false,
-                items:response
-            })
-        }).catch(error=>{
-            console.log(error)
-            dispatch({
-                type:types.FAVORITE_SUCCESS,
-                status:true
-            })
-        })*/
     }
 }
   /**
@@ -158,9 +137,9 @@ export function removeFavoriteData(key,callBack = ()=>{}){
    * @Desc:查找指定收藏
    * @Params:data
    */
-export function getFavoriteData(key,callBack=()=>{},isState){
+export function getFavoriteData(key,callBack=()=>{},isState,flag){
     return dispatch=>{
-        let dataStore = new CacheFavorite('popular');
+        let dataStore = new CacheFavorite(flag);
         if (!key) {
             dispatch({
                 type:types.FAVORITE_FAIL,

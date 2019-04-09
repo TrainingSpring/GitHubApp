@@ -1,4 +1,5 @@
 import {AsyncStorage} from 'react-native'
+
 /**
 * @Author:Training
 * @desc
@@ -7,10 +8,9 @@ import {AsyncStorage} from 'react-native'
  * 需要注意的是,在各种情况下的数据返回的类型是相同的,不要这里返回数据data,那里返回数据timeStamp,
  * 而另外的其他地方则返回完整数据,这会导致数据的不一致,从而在使用的时候导致解析失败而发生的错误
 */
-const FAVORYTE_TYPE = 'FAVORYTE_TYPE_'
 export default class CacheFavorite {
     constructor(flag){
-        this.favoriteKey = FAVORYTE_TYPE+flag;
+        this.favoriteKey = flag;
     }
      /**
       * @Author:Training
@@ -51,7 +51,9 @@ export default class CacheFavorite {
 
              AsyncStorage.getItem(this.favoriteKey,((error, response) => {
                  if (!error){
-                     result = JSON.parse(response);
+                     if (response) {
+                         result = JSON.parse(response);
+                     }
                      let index = result.indexOf(key);
                      if (!isDelete) {
                          if (index === -1) result.push(key);

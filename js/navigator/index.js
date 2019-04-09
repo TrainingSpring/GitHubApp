@@ -19,9 +19,10 @@ import DetailPage from '../pages/DetailPage'
 import UseFetchDemo from '../pages/UseFetchDemo'
 import UseAsyncStorageDemo from '../pages/UseAsyncStorageDemo'
 import UseCacheDemo from '../pages/UseCacheDemo'
+import SearchPage from '../pages/SearchPage'
 import {connect} from 'react-redux';
 import {createReactNavigationReduxMiddleware, createReduxContainer} from 'react-navigation-redux-helpers';
-
+import {View,Text} from 'react-native';
 export const rootCom = 'Init';//设置根路由
 const InitNavigator = createStackNavigator({
     WelcomePage: {
@@ -42,6 +43,12 @@ const MainNavigator = createStackNavigator({
         screen: DetailPage,
         navigationOptions: {
             headerTitle: 'back'
+        }
+    },
+    SearchPage:{
+        screen: SearchPage,
+        navigationOptions: {
+            header:()=><View><Text>this is title</Text></View>
         }
     },
     UseFetchDemo: {

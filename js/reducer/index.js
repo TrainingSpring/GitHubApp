@@ -2,6 +2,7 @@ import {combineReducers} from 'redux'
 import theme from './theme'
 import popular from './popular'
 import favorite from './favorite'
+import trending from './trending'
 import {rootCom, RootNavigator} from '../navigator/index';
 
 /**1.指定默认state*/
@@ -19,7 +20,8 @@ const index = combineReducers({
     nav: navReducer,
     theme: theme,
     popular:popular,
-    favorite:favorite
+    favorite:favorite,
+    trending:trending
 });
 
 export default index;

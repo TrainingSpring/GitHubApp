@@ -9,11 +9,12 @@ import React, {Component} from 'react';
 import {ActivityIndicator, StyleSheet, Text,RefreshControl, View, FlatList,ToastAndroid} from 'react-native';
 import action from "../action/";
 import {connect} from "react-redux";
-import PopularComponent from '../Components/PopularComponent'
-import Toast from "../plugin/toast"
+import PopularComponent from '../Components/PopularListComponent'
+import NavigationBar from '../Components/navigationBar'
 import navigatorUtil from '../Util/navigatorUtil'
 import {createMaterialTopTabNavigator, createAppContainer} from "react-navigation";
-
+import EvilIcons from "react-native-vector-icons/EvilIcons"
+import Feather from "react-native-vector-icons/Feather"
 
 type Props = {};
 const storeName = ['Java', 'Ios', 'Android', 'Php', 'JavaScript', 'Python'];
@@ -43,7 +44,7 @@ class PopularPage extends Component<Props> {
                 scrollEnabled: true,
                 style:{
                     backgroundColor:this.state.theme.theme,
-                    height:50
+                    height:40,
                 }
             }
         });
@@ -62,7 +63,7 @@ class PopularPage extends Component<Props> {
                     return  <PopularMainTab {...props} tabLabel={item}/>
                 },
                 navigationOptions: {
-                    title: item
+                    title: item,
                 }
             }
         });
@@ -71,15 +72,27 @@ class PopularPage extends Component<Props> {
 
     render() {
         const Tab =  createAppContainer(this._createTopNav());
-        return (
-            <Tab></Tab>
-        );
+        const rightBtn=
+            <View style={{flexDirection:'row',alignItems:'center'}}>
+                <EvilIcons name={'search'} size={24} color={'white'} style={ {marginRight:20} }/>
+                <Feather  name={'more-vertical'} size={24} color={'white'}/>
+            </View>;
+        const leftBtn=
+            <View style={{flexDirection:'row',alignItems:'center',opacity:0}}>
+                <EvilIcons name={'search'} size={24} color={'white'} style={ {marginRight:20} }/>
+                <Feather  name={'more-vertical'} size={24} color={'white'}/>
+            </View>;
+
+        return <View style={{flex:1}}>
+                <NavigationBar statusBar={{backgroundColor:'pink'}} title={"Popular"} style={ {backgroundColor: this.state.theme.theme} } leftButton={leftBtn} rightButton={rightBtn}/>
+                <Tab />
+            </View>
     }
 }
 
 class PopularMain extends Component {
     constructor(props) {
-        super(props)
+        super(props);
         const {tabLabel} = this.props;
         this.storeName = tabLabel;
         this.pageIndex = 1;

@@ -12,12 +12,12 @@ export default function onAction(state=defaultState,action) {
             return {
                 ...state,
                 items:action.items,
-                status:true
+                status:action.status
             };
         case types.FAVORITE_FAIL:
             return {
                 ...state,
-                status:false
+                status:action.status
             };
         default:
             return state;

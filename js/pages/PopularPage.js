@@ -38,6 +38,7 @@ class PopularPage extends Component<Props> {
     _createTopNav() {
         let tab = this.setTab(storeName);
         return createMaterialTopTabNavigator(tab, {
+            lazy:true,
             tabBarOptions: {
                 scrollEnabled: true,
                 style:{
@@ -69,7 +70,7 @@ class PopularPage extends Component<Props> {
     }
 
     render() {
-        const Tab = createAppContainer(this._createTopNav());
+        const Tab =  createAppContainer(this._createTopNav());
         return (
             <Tab></Tab>
         );

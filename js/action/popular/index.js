@@ -99,34 +99,46 @@ export function onLoadMorePopularData(storeName,allData,items,pageSize,pageIndex
    * @Desc:添加收藏
    * @Params:data
    */
-export function addFavoriteData(data){
+export function addFavoriteData(data,callBack = ()=>{}){
     return dispatch=>{
-        let dataStore = new CacheFavorite();
-        dataStore.addData(data.item).then(response=>{
-            console.log(response,'item add favorite');
+        let dataStore = new CacheFavorite('popular');
+        dataStore.setData(data.id,data).then(status=>{
+            callBack(true);
             dispatch({
                 type:types.FAVORITE_SUCCESS,
-                items:response.item
+                status:true,
             })
-        }).catch(error=>{
-            console.log(error,"error add favorite")
+        }).catch((error)=>{
+            callBack(false);
             dispatch({
                 type:types.FAVORITE_FAIL,
-                status:true
+                status:false,
             })
+
         })
     }
 }
   /**
    * @Author:Training
-   * @Desc:查找所有收藏
+   * @Desc:取消收藏
    * @Params:data
    */
-export function getFavoriteData(){
+export function removeFavoriteData(key,callBack = ()=>{}){
     return dispatch=>{
-        let dataStore = new CacheFavorite();
-        dataStore.getData().then(response=>{
-            console.log(response);
+        let dataStore = new CacheFavorite('popular');
+        dataStore.removeData(key).then(res=>{
+            callBack(true);
+            dispatch({
+                type:types.FAVORITE_SUCCESS,
+                status:false
+            })
+        }).catch(err=>{
+            callBack(false);
+            dispatch({
+                type:types.FAVORITE_FAIL
+            })
+        })
+        /*dataStore.getData().then(response=>{
             dispatch({
                 type:types.FAVORITE_SUCCESS,
                 status:false,
@@ -138,6 +150,38 @@ export function getFavoriteData(){
                 type:types.FAVORITE_SUCCESS,
                 status:true
             })
-        })
+        })*/
+    }
+}
+  /**
+   * @Author:Training
+   * @Desc:查找指定收藏
+   * @Params:data
+   */
+export function getFavoriteData(key,callBack=()=>{},isState){
+    return dispatch=>{
+        let dataStore = new CacheFavorite('popular');
+        if (!key) {
+            dispatch({
+                type:types.FAVORITE_FAIL,
+                error:"this key is undefined!"
+            });
+            callBack(0);
+            return;
+        }
+        dataStore.getFavoriteData(key,isState).then(res=>{
+           if (isState) {
+               dispatch({
+                   type:types.FAVORITE_SUCCESS
+               });
+               callBack(res);
+           }else{
+               dispatch({
+                   type:types.FAVORITE_SUCCESS,
+                   item:res
+               });
+               callBack(1);
+           }
+        });
     }
 }

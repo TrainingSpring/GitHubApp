@@ -10,22 +10,47 @@ import {Image, StyleSheet, Text, View,TouchableOpacity} from 'react-native';
 import Entypo from "react-native-vector-icons/Entypo"
 import {connect} from "react-redux";
 import action from "../action";
-import {addFavoriteData} from "../action/popular";
 
 
 type Props = {};
 class PopularComponent extends Component<Props> {
     constructor(props){
         super(props);
-        const {getFavoriteData} = this.props;
-        getFavoriteData();
-        this.state={
+        const {item,getFavoriteData} = this.props;
+        this.state = {
             favorite:false
         };
-        console.log(this.props,'construct')
+        getFavoriteData(item.item.id,status=>{
+            if (status) {
+                this.state.favorite = true;
+            }else{
+                this.state.favorite=false
+            }
+        },true);
 
     }
-  render() {
+    componentDidMount(): void {
+
+
+    }
+    setFavorite(data){
+        const {removeFavoriteData,addFavoriteData} = this.props;
+        if (this.state.favorite){
+            removeFavoriteData(data.id,(status)=>{
+                if (status) this.setState({favorite:false});
+            });
+        }else{
+            addFavoriteData(data,state=>{
+                if (state){
+                    this.setState({
+                        favorite:true
+                    })
+                }
+            });
+        }
+        // if (this.props)
+    }
+    render() {
       let {item} = this.props;
       return (
       <View style={styles.bigBox}>
@@ -39,11 +64,10 @@ class PopularComponent extends Component<Props> {
                       <Text style={styles.text1}>Author: <Image style={{width:20,height:20}} source={{uri:item.item.owner.avatar_url}} /> </Text>
                       <Text style={styles.text2}>Stars:{item.item.stargazers_count}</Text>
                       <Text style={styles.text3} onPress={()=>{
-                          let { addFavoriteData }=this.props;
-                          addFavoriteData(item);
+                         this.setFavorite(item.item);
                       }}>
                           <Entypo
-                            name={item.favorite?'star':'star-outlined'}
+                            name={this.state.favorite?'star':'star-outlined'}
                             size={20}
                             color={this.props.theme.theme}
                           />
@@ -90,7 +114,8 @@ const mapStateToProps = state=>{
     }
 };
 const mapDispatchToProps = dispatch => ({
-    addFavoriteData: (data) => dispatch(action.addFavoriteData(data)),
-    getFavoriteData:()=>dispatch(action.getFavoriteData())
+    addFavoriteData: (data,callBack) => dispatch(action.addFavoriteData(data,callBack)),
+    removeFavoriteData: (key,callBack) => dispatch(action.removeFavoriteData(key,callBack)),
+    getFavoriteData:(key,isState,callBack)=>dispatch(action.getFavoriteData(key,isState,callBack))
 });
 export default connect(mapStateToProps,mapDispatchToProps)(PopularComponent)

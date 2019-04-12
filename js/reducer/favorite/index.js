@@ -19,6 +19,28 @@ export default function onAction(state=defaultState,action) {
                 ...state,
                 status:action.status
             };
+        case types.FAVORITE_GET_SUCCESS:
+            return{
+                ...state,
+                popularData:action.popularData?action.popularData:state.popularData,
+                trendingData:action.trendingData?action.trendingData:state.trendingData,
+                status:true,
+                isLoading:false
+            };
+        case types.FAVORITE_GET_RELOAD:
+            return{
+                ...state,
+                status:false,
+                isLoading:true
+            };
+        case types.FAVORITE_GET_FAIL:
+            return{
+                ...state,
+                popularData:action.popularData?action.popularData:null,
+                trendingData:action.trendingData?action.trendingData:null,
+                status:'fail',
+                isLoading:false
+            };
         default:
             return state;
     }

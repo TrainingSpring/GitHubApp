@@ -17,32 +17,28 @@ type Props = {};
 class PopularListComponent extends Component<Props> {
     constructor(props){
         super(props);
-        const {item,getFavoriteData} = this.props;
         this.state = {
-            favorite:false
+            favorite:props.item.item.isFavorite
         };
-        getFavoriteData(item.item.id,status=>{
-            if (status) {
-                this.state.favorite = true;
-            }else{
-                this.state.favorite=false
-            }
-        },true,FavoriteKey);
 
     }
     componentDidMount(): void {
 
 
     }
-    setFavorite(data){
-        const {removeFavoriteData,addFavoriteData} = this.props;
-        if (this.state.favorite){
+    setFavorite(data,index){
+        const {removeFavoriteData,addFavoriteData,updateFavoriteItem} = this.props;
+        if (this.props.item.item.isFavorite){
             removeFavoriteData(data.id,(status)=>{
-                if (status) this.setState({favorite:false});
+                if (status) {
+                    updateFavoriteItem(this.props.popular[this.props.storeName].items,index,false,TYPESTORE.popular);
+                    this.setState({favorite:false});
+                }
             },FavoriteKey);
         }else{
             addFavoriteData(data.id,data,state=>{
                 if (state){
+                    updateFavoriteItem(this.props.popular[this.props.storeName].items,index,true,TYPESTORE.popular);
                     this.setState({
                         favorite:true
                     })
@@ -53,22 +49,24 @@ class PopularListComponent extends Component<Props> {
     }
     render() {
       let {item} = this.props;
-      return (
+      let data = item.item.data;
+      let favorite = item.item.isFavorite
+        return (
       <View style={styles.bigBox}>
           <TouchableOpacity onPress={()=>{
               console.log(2)
           }} >
               <View>
-                  <Text style={styles.title}>{item.item.full_name}</Text>
-                  <Text style={styles.desc}>{item.item.description}</Text>
+                  <Text style={styles.title}>{data.full_name}</Text>
+                  <Text style={styles.desc}>{data.description}</Text>
                   <View style={styles.bottomInfo}>
-                      <Text style={styles.text1}>Author: <Image style={{width:20,height:20}} source={{uri:item.item.owner.avatar_url}} /> </Text>
-                      <Text style={styles.text2}>Stars:{item.item.stargazers_count}</Text>
+                      <Text style={styles.text1}>Author: <Image style={{width:20,height:20}} source={{uri:data.owner.avatar_url}} /> </Text>
+                      <Text style={styles.text2}>Stars:{data.stargazers_count}</Text>
                       <Text style={styles.text3} onPress={()=>{
-                         this.setFavorite(item.item);
+                         this.setFavorite(data,item.index);
                       }}>
                           <Entypo
-                            name={this.state.favorite?'star':'star-outlined'}
+                            name={favorite?'star':'star-outlined'}
                             size={20}
                             color={this.props.theme.theme}
                           />
@@ -111,12 +109,14 @@ const styles = StyleSheet.create({
 const mapStateToProps = state=>{
     return {
         theme:state.theme,
-        favorite:state.favorite
+        favorite:state.favorite,
+        popular:state.popular
     }
 };
 const mapDispatchToProps = dispatch => ({
     addFavoriteData: (key,data,callBack,flag) => dispatch(action.addFavoriteData(key,data,callBack,flag)),
     removeFavoriteData: (key,callBack,flag) => dispatch(action.removeFavoriteData(key,callBack,flag)),
-    getFavoriteData:(key,isState,callBack,flag)=>dispatch(action.getFavoriteData(key,isState,callBack,flag))
+    getFavoriteData:(key,isState,callBack,flag)=>dispatch(action.getFavoriteData(key,isState,callBack,flag)),
+    updateFavoriteItem:(data,index,flag)=>dispatch(action.updateFavoriteItem(data,index,flag))
 });
 export default connect(mapStateToProps,mapDispatchToProps)(PopularListComponent)

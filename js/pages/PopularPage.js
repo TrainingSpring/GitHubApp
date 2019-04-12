@@ -114,7 +114,7 @@ class PopularMain extends Component {
 
     handleRender(data) {
         return (
-            <PopularComponent item={data}/>
+            <PopularComponent item={data} storeName={this.storeName} />
         )
     }
     loadMoreData(finish){
@@ -141,7 +141,7 @@ class PopularMain extends Component {
         return <View>
             <FlatList
                 data={store.items}
-                keyExtractor={item => "" + item.id}
+                keyExtractor={item => "" + item.data.id}
                 renderItem={(data) => this.handleRender(data)}
                 ListFooterComponent={()=>this.loadMoreData(store.finish)}
                 onEndReachedThreshold={0.5}

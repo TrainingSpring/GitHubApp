@@ -14,6 +14,7 @@ import NavigationBar from '../Components/navigationBar'
 import {createMaterialTopTabNavigator, createAppContainer} from "react-navigation";
 import EvilIcons from "react-native-vector-icons/EvilIcons"
 import Feather from "react-native-vector-icons/Feather"
+import PopularComponent from "./PopularPage";
 type Props = {};
 const storeName = ['C++', 'Html', 'JavaScript', 'C#', 'Php', 'Python'];
 const url = 'https://github.com/trending/';
@@ -101,7 +102,6 @@ class TrendingMain extends Component {
     loadData() {
         const {onLoadTrendingData} = this.props;
         const url = this.setUrl(this.storeName);
-        console.log(url);
         onLoadTrendingData(this.storeName, url,false);
     }
 
@@ -110,9 +110,8 @@ class TrendingMain extends Component {
     }
 
     handleRender(data) {
-        debugger;
         return (
-            <TrendingListComponent item={data}/>
+            <TrendingListComponent item={data}  storeName={this.storeName}/>
         )
     }
     loadMoreData(finish){
@@ -136,10 +135,11 @@ class TrendingMain extends Component {
                 isLoading: false
             }
         }
+        console.log(store);
         return <View>
             <FlatList
                 data={store.items}
-                keyExtractor={item => "" + item.url}
+                keyExtractor={item => "" + item.data.url}
                 renderItem={(data) => this.handleRender(data)}
                 ListFooterComponent={()=>this.loadMoreData(store.finish)}
                 onEndReachedThreshold={0.5}

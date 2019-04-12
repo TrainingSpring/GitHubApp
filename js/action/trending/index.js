@@ -7,10 +7,10 @@
 */
 import types from '../types'
 import DataStore,{TYPESTORE} from '../../cache/dataStore'
-import CacheFavorite from '../../cache/cacheFavorite'
 import {ToastAndroid} from 'react-native'
 import {handleData} from "../actionDataUtil";
-const TypeStore = TYPESTORE.trending
+import {onFreshFavoriteData} from "../favorite";
+const TypeStore = TYPESTORE.trending;
  /**
   * @Author:Training
   * @Desc:加载popular中的数据
@@ -37,10 +37,10 @@ export function onLoadTrendingData(storeName,url,refresh,pageSize) {
         dataPromise
             .then(res=>{
                 const data = typeof res.data === 'object'?res.data:JSON.parse(res.data);
-                handleData(types.TRENDING_SUCCESS,dispatch,storeName,data,pageSize);
+                handleData(types.TRENDING_SUCCESS,dispatch,storeName,data,pageSize,TypeStore);
             })
             .catch(error=>{
-                console.log('Error:',error);
+                console.log('Error: 操作数据失败:',error);
                 dispatch({
                     type:types.TRENDING_FAIL,
                     storeName,
@@ -58,13 +58,12 @@ export function onLoadMoreTrendingData(storeName,allData,items,pageSize,pageInde
     return dispatch=>{
         let result = items;
         let status = false;
+        let centerData = [];
         if(allData.length>(pageSize * pageIndex)){
-            let centerData = allData.slice(items.length,(pageIndex * pageSize));
-            result = result.concat(centerData);
+            centerData = allData.slice(items.length,(pageIndex * pageSize));
             status = true;
         }else if((pageSize*pageIndex) - allData.length <pageSize){
-            let centerData = allData.slice(items.length,allData.length);
-            result = result.concat(centerData);
+            centerData = allData.slice(items.length,allData.length);
             status = true;
         }
         if(!status){
@@ -76,103 +75,21 @@ export function onLoadMoreTrendingData(storeName,allData,items,pageSize,pageInde
             });
             ToastAndroid.show("没有更多了...",ToastAndroid.SHORT);
         }else {
-            dispatch({
-                type:types.TRENDING_LOAD_MORE_SUCCESS,
-                storeName,
-                items:result,
-                data:allData
+            onFreshFavoriteData(TypeStore,centerData,(error)=>{
+                if (error) {
+                    console.log(error);
+                }
+            }).then(res=>{
+                result = result.concat(res);
+                dispatch({
+                    type:types.TRENDING_LOAD_MORE_SUCCESS,
+                    items:result,
+                    data:allData,
+                    storeName
+                });
+            }).catch(error=>{
+                console.log('刷新收藏数据失败');
             })
         }
     }
  }
-  /**
-   * @Author:Training
-   * @Desc:添加收藏
-   * @Params:data
-   */
-export function addFavoriteData(data,callBack = ()=>{}){
-    return dispatch=>{
-        let dataStore = new CacheFavorite('trending');
-        dataStore.setData(data.id,data).then(status=>{
-            callBack(true);
-            dispatch({
-                type:types.FAVORITE_SUCCESS,
-                status:true,
-            })
-        }).catch((error)=>{
-            callBack(false);
-            dispatch({
-                type:types.FAVORITE_FAIL,
-                status:false,
-            })
-
-        })
-    }
-}
-  /**
-   * @Author:Training
-   * @Desc:取消收藏
-   * @Params:data
-   */
-export function removeFavoriteData(key,callBack = ()=>{}){
-    return dispatch=>{
-        let dataStore = new CacheFavorite('trending');
-        dataStore.removeData(key).then(res=>{
-            callBack(true);
-            dispatch({
-                type:types.FAVORITE_SUCCESS,
-                status:false
-            })
-        }).catch(err=>{
-            callBack(false);
-            dispatch({
-                type:types.FAVORITE_FAIL
-            })
-        })
-        /*dataStore.getData().then(response=>{
-            dispatch({
-                type:types.FAVORITE_SUCCESS,
-                status:false,
-                items:response
-            })
-        }).catch(error=>{
-            console.log(error)
-            dispatch({
-                type:types.FAVORITE_SUCCESS,
-                status:true
-            })
-        })*/
-    }
-}
-  /**
-   * @Author:Training
-   * @Desc:查找指定收藏
-   * @Params:data
-   */
-export function getFavoriteData(key,callBack=()=>{},isState){
-    return dispatch=>{
-        let dataStore = new CacheFavorite('trending');
-        if (!key) {
-            dispatch({
-                type:types.FAVORITE_FAIL,
-                error:"this key is undefined!"
-            });
-            callBack(0);
-            return;
-        }
-        dataStore.getFavoriteData(key,isState).then(res=>{
-           if (isState) {
-               dispatch({
-                   type:types.FAVORITE_SUCCESS
-               });
-               callBack(res);
-           }else{
-               dispatch({
-                   type:types.FAVORITE_SUCCESS,
-                   item:res
-               });
-               callBack(1);
-           }
-        });
-    }
-}

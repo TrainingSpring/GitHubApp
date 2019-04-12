@@ -14,8 +14,8 @@ export default function onAction(state=defaultState,action) {
                 ...state,
                 [action.storeName]:{
                     ...state[action.storeName],
-                    items:action.items,
-                    data:action.data,
+                    items:action.items?action.items:state.items,
+                    data:action.data?action.data:state.data,
                     isLoading:false,
                     finish:false
                 }

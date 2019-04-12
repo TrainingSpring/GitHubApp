@@ -14,6 +14,26 @@ export default class CacheFavorite {
     }
      /**
       * @Author:Training
+      * @Desc:获取所有的favorite key
+      * @Params:flag
+      * @return Array : 所有已收藏的数据的key
+      */
+     getFavoriteKeys(){
+         return new Promise((resolve, reject) => {
+             AsyncStorage.getItem(this.favoriteKey,(error,response)=>{
+                 if (error) {
+                     reject('在 favoriteKey中未查找到内容:'+error);
+                 }else if(!response){
+                     resolve(false);
+                 }else{
+                     response = JSON.parse(response);
+                     resolve(response);
+                 }
+             })
+         })
+     }
+     /**
+      * @Author:Training
       * @Desc:添加一条收藏数据
       * @Params: key: 数据的id    value:整个数据
       */
@@ -38,7 +58,7 @@ export default class CacheFavorite {
     }
      /**
       * @Author:Training
-      * @Desc:更细数据
+      * @Desc:更新数据
       * @Params: commandKey  公用的key值,保存所有数据的id值
       *          isDelete    是否删除某个数据
       */
@@ -137,14 +157,22 @@ export default class CacheFavorite {
          */
         getAllData(){
             return new Promise((resolve, reject) => {
-                this.getFavoriteData(this.favoriteKey).then(result =>{
+                AsyncStorage.getItem(this.favoriteKey,(error,result)=>{
                     if (result) {
+                        result = JSON.parse(result);
                         AsyncStorage.multiGet(result,((error, response) =>{
                             if  (error)reject("查找所有数据错误: "+error);
-                            resolve(JSON.parse(response))
+                            resolve(response);
                         } ))
+                    }else{
+                        resolve([]);
                     }
                 })
+            })
+        }
+        clearAllData(){
+            AsyncStorage.clear(error => {
+                console.log(error);
             })
         }
 }

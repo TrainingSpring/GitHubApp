@@ -18,10 +18,16 @@ const logger = store=>next=>action=>{
     const result = next(action);                //继续执行action
     console.log('nextState',store.getState());  //打印状态改变后的值
 };
+const favorite = store=>next=>action=>{
+    console.log(store.getState(),"中间件编写测试---改写前");
+    next(action)
+    console.log(store.getState(),"中间件编写测试---改写后");
+}
 
 const middlewares = [
     middleware,
-    thunk
+    thunk,
+    favorite
 ];
 /** * 创建store */
 export default createStore(reducers, applyMiddleware(...middlewares));

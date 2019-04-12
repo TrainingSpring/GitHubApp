@@ -87,7 +87,7 @@ class DynamicTabNavigation extends Component<Props> {
      */
     _createNavBar(){
         const {PopularPage,TrendingPage,FavoritePage,MyPage} = NAVIGATOR;
-        const tabNavigator = {PopularPage,TrendingPage,FavoritePage};
+        const tabNavigator = {PopularPage,TrendingPage,FavoritePage,MyPage};
         /** 返回一个底部导航 */
         return createBottomTabNavigator(tabNavigator,{
             // tabBarComponent: TabBarComponent //对底部导航进行控制   基于react-native-tabs组件  TabBarComponent:用于控制react-navigation-tabs的组件

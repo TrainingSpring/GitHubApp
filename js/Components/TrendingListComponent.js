@@ -14,35 +14,30 @@ import {TYPESTORE} from "../cache/dataStore";
 
 const FavoriteKey = TYPESTORE.trending;
 type Props = {};
-class PopularListComponent extends Component<Props> {
+class TrendingListComponent extends Component<Props> {
     constructor(props){
         super(props);
-        const {item,getFavoriteData} = this.props;
         this.state = {
-            favorite:false
+            favorite:props.item.item.isFavorite
         };
-        getFavoriteData(item.item.url,status=>{
-            if (status) {
-                this.state.favorite = true;
-            }else{
-                this.state.favorite=false
-            }
-        },true,FavoriteKey);
-
     }
     componentDidMount(): void {
 
 
     }
-    setFavorite(data){
-        const {removeFavoriteData,addFavoriteData} = this.props;
-        if (this.state.favorite){
+    setFavorite(data,index){
+        const {removeFavoriteData,addFavoriteData,updateFavoriteItem} = this.props;
+        if (this.props.item.item.isFavorite){
             removeFavoriteData(data.url,(status)=>{
-                if (status) this.setState({favorite:false});
+                if (status) {
+                    updateFavoriteItem(this.props.trending[this.props.storeName].items,index,false,TYPESTORE.trending);
+                    this.setState({favorite:false});
+                }
             },FavoriteKey);
         }else{
             addFavoriteData(data.url,data,state=>{
                 if (state){
+                    updateFavoriteItem(this.props.trending[this.props.storeName].items,index,true,TYPESTORE.trending);
                     this.setState({
                         favorite:true
                     })
@@ -53,26 +48,27 @@ class PopularListComponent extends Component<Props> {
     }
     getBuildImage(data,index){
         return <Image key={index} style={{width:20,height:20}} source={{uri:data}} />
-
     }
     render() {
       let {item} = this.props;
+      let data = item.item.data;
+      let favorite = item.item.isFavorite;
         return (
       <View style={styles.bigBox}>
           <TouchableOpacity onPress={()=>{
               console.log(2)
           }} >
               <View>
-                  <Text style={styles.title}>{item.item.fullName}</Text>
-                  <Text style={styles.desc}>{item.item.description}</Text>
-                  <Text style={styles.star}>{item.item.meta}</Text>
+                  <Text style={styles.title}>{data.fullName}</Text>
+                  <Text style={styles.desc}>{data.description}</Text>
+                  <Text style={styles.star}>{data.meta}</Text>
                   <View style={styles.bottomInfo}>
-                      <Text style={styles.text1}>Build By: {item.item.contributors?item.item.contributors.map((i,index)=>this.getBuildImage(i,index)):null }</Text>
+                      <Text style={styles.text1}>Build By: {data.contributors?data.contributors.map((i,index)=>this.getBuildImage(i,index)):null }</Text>
                       <Text style={styles.text3} onPress={()=>{
-                         this.setFavorite(item.item);
+                         this.setFavorite(data,item.index);
                       }}>
                           <Entypo
-                            name={this.state.favorite?'star':'star-outlined'}
+                            name={favorite?'star':'star-outlined'}
                             size={20}
                             color={this.props.theme.theme}
                           />
@@ -108,12 +104,14 @@ const styles = StyleSheet.create({
 const mapStateToProps = state=>{
     return {
         theme:state.theme,
-        favorite:state.favorite
+        favorite:state.favorite,
+        trending:state.trending
     }
 };
 const mapDispatchToProps = dispatch => ({
     addFavoriteData: (key,data,callBack,flag) => dispatch(action.addFavoriteData(key,data,callBack,flag)),
     removeFavoriteData: (key,callBack,flag) => dispatch(action.removeFavoriteData(key,callBack,flag)),
-    getFavoriteData:(key,isState,callBack,flag)=>dispatch(action.getFavoriteData(key,isState,callBack,flag))
+    getFavoriteData:(key,isState,callBack,flag)=>dispatch(action.getFavoriteData(key,isState,callBack,flag)),
+    updateFavoriteItem:(data,index,flag)=>dispatch(action.updateFavoriteItem(data,index,flag))
 });
-export default connect(mapStateToProps,mapDispatchToProps)(PopularListComponent)
+export default connect(mapStateToProps,mapDispatchToProps)(TrendingListComponent)

@@ -7,15 +7,18 @@ import {onThemeChange} from "./theme/index";
 import {
     onLoadPopularData,
     onLoadMorePopularData,
-    addFavoriteData,
-    getFavoriteData,
-    removeFavoriteData,
 } from "./popular/index";
 import {
     onLoadTrendingData,
     onLoadMoreTrendingData
 } from "./trending/index";
-
+import {
+    addFavoriteData,
+    getFavoriteData,
+    removeFavoriteData,
+    updateFavoriteItem,
+    getAllFavoriteData
+} from './favorite'
 export default {
     onThemeChange: onThemeChange,
     onLoadPopularData,
@@ -24,5 +27,7 @@ export default {
     removeFavoriteData,
     getFavoriteData,
     onLoadTrendingData,
-    onLoadMoreTrendingData
+    onLoadMoreTrendingData,
+    getAllFavoriteData,
+    updateFavoriteItem,
 }

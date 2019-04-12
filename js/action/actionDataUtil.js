@@ -1,23 +1,33 @@
 
 //操作数据
-import types from "./types";
+import {onFreshFavoriteData} from "./favorite";
 
-export function handleData(dataAction,dispatch, storeName, data, pageSize){
+export function handleData(dataAction,dispatch, storeName, data, pageSize,flag){
     let items ;
     let viewData =[];
     if (data) {
         if (Array.isArray(data)) {
-            viewData = data.length<pageSize?data:data.slice(0,pageSize) ;
             items = data;
         }else if(Array.isArray(data.items)){
-            viewData = data.items.length<pageSize?data.items:data.items.slice(0,pageSize) ;
             items = data.items;
         }
+        viewData = items.length<pageSize?items:items.slice(0,pageSize) ;
+
+        onFreshFavoriteData(flag,viewData,(error)=>{
+            if (error) {
+                console.log(error);
+            }
+        }).then(res=>{
+            viewData = res;
+            dispatch({
+                type:dataAction,
+                items:viewData,
+                data:items,
+                storeName
+            });
+        }).catch(error=>{
+            console.log('刷新收藏数据失败');
+        })
     }
-    dispatch({
-        type:dataAction,
-        items:viewData,
-        data:items,
-        storeName
-    })
+
 }
